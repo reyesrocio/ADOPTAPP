@@ -315,7 +315,7 @@
                 nombreMascotaInput.value = '⚠️ ¡ATENCIÓN! Debes seleccionar una mascota en la lista.';
                 nombreMascotaInput.style.borderColor = '#cc0000';
                 nombreMascotaInput.style.color = '#cc0000';
-                submitBtn.disabled = true;
+                submitBtn.textContent = "Procesando solicitud...";
                 displayContainer.innerHTML = '';
                 displayContainer.appendChild(createBadge('Por favor, haz clic en el botón para elegir.'));
             }
@@ -323,48 +323,62 @@
 
         // 2. Manejar el envío: Actualizar DB local y Redirigir
         formulario.addEventListener('submit', function(e) {
-            e.preventDefault(); 
+        e.preventDefault(); 
 
-            if (!mascotaData || submitBtn.disabled) {
-                alert("Error: Por favor, selecciona una mascota y rellena todos los campos.");
-                return;
-            }
+        if (!mascotaData || submitBtn.disabled) {
+            alert("Error: Por favor, selecciona una mascota y rellena todos los campos.");
+            return;
+        }
 
-            // A. Marcar la mascota como NO disponible en la DB virtual (localStorage)
-            let db = JSON.parse(localStorage.getItem('mascotasDB') || '[]');
-            const index = db.findIndex(m => m.id === mascotaData.id);
+// 🔹 Registrar solicitud de adopción (para el admin)
+        let solicitudes = JSON.parse(localStorage.getItem("solicitudesDB")) || [];
 
-            if (index !== -1 && db[index].disponible) {
-                db[index].disponible = false; // ¡Adoptada!
-                localStorage.setItem('mascotasDB', JSON.stringify(db));
-            } else if (!db[index].disponible) {
-                 // Error si alguien intenta enviar dos veces
-                 alert(`La mascota ${mascotaData.nombre} ya ha sido adoptada por otra persona. ¡Selecciona otra!`);
-                 return;
-            }
+        solicitudes.push({
+            id: Date.now(),
+            mascota: mascotaSeleccionada.nombre,
+            adoptante: nombreUsuario,
+            telefono: telefono,
+            fecha: new Date().toLocaleDateString(),
+            estado: "pendiente"
+});
 
-            // B. Registrar la solicitud en el registro de Adopciones Exitosas
-            let solicitudes = JSON.parse(localStorage.getItem('adopcionesExito') || '[]');
-            
-            const nuevaSolicitud = {
-                id: Date.now(),
-                fecha: new Date().toLocaleString(),
-                nombre_adoptante: document.getElementById('nombre').value, 
-                email: document.getElementById('email').value,
-                mascota_id: mascotaData.id,
-                nombre_mascota: mascotaData.nombre,
-                tipo: mascotaData.tipo,
-                raza: mascotaData.raza
-            };
-            
-            solicitudes.push(nuevaSolicitud);
-            localStorage.setItem('adopcionesExito', JSON.stringify(solicitudes));
-            
-            // C. Limpiar la selección actual y redirigir
-            localStorage.removeItem('mascotaSeleccionadaForm');
-            window.location.href = `gracias_adopcion.html?mascota=${encodeURIComponent(mascotaData.nombre)}`;
-        });
-    </script>
+localStorage.setItem("solicitudesDB", JSON.stringify(solicitudes));
+
+        
+        // 1. Obtener DB de mascotas
+        let db = JSON.parse(localStorage.getItem('mascotasDB') || '[]');
+        const index = db.findIndex(m => m.id === mascotaData.id);
+
+        // Validación de disponibilidad
+        if (index === -1 || db[index].disponible === false) {
+            alert(`La mascota ${mascotaData.nombre} ya fue adoptada. Elige otra.`);
+            return;
+        }
+
+        // 2. Marcar mascota como adoptada (AQUÍ se confirma)
+        db[index].disponible = false;
+        localStorage.setItem('mascotasDB', JSON.stringify(db));
+
+        // 3. Registrar adopción exitosa
+        let solicitudes = JSON.parse(localStorage.getItem('adopcionesExito') || '[]');
+
+        const nuevaSolicitud = {
+            id: Date.now(),
+            fecha: new Date().toLocaleString(),
+            nombre_adoptante: document.getElementById('nombre').value,
+            email: document.getElementById('email').value,
+            nombre_mascota: mascotaData.nombre,
+            tipo: mascotaData.tipo,
+            raza: mascotaData.raza || 'Mestizo'
+        };
+
+        solicitudes.push(nuevaSolicitud);
+        localStorage.setItem('adopcionesExito', JSON.stringify(solicitudes));
+
+        // 4. Limpiar selección y redirigir
+        localStorage.removeItem('mascotaSeleccionadaForm');
+        window.location.href = `05-gracias_adopcion.html?mascota=${encodeURIComponent(mascotaData.nombre)}`;
+    });
+</script>
 </body>
-
 </html>
