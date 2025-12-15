@@ -2,56 +2,169 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Admin Mascotas</title>
-</head>
-<body>
+<title>Admin - Gestión de Mascotas</title>
 
-<h2>🐾 Gestión de Mascotas</h2>
-
-<input id="nombre" placeholder="Nombre">
-<input id="tipo" placeholder="Tipo">
-<input id="raza" placeholder="Raza">
-<button onclick="agregar()">Agregar</button>
-
-<ul id="lista"></ul>
-
-<script>
-if (localStorage.getItem("adminLogueado") !== "true") {
-  window.location.href = "admin-login.html";
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6fb;
+    padding: 30px;
 }
 
-let db = JSON.parse(localStorage.getItem("mascotasDB") || "[]");
+h2 {
+    text-align: center;
+    color: #4a6fa5;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-add {
+    background: #4CAF50;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-delete {
+    background: #e74c3c;
+    color: white;
+    margin-left: 10px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<script>
+/* 🔐 Seguridad: solo admin */
+if (localStorage.getItem("adminLogueado") !== "true") {
+    window.location.href = "admin-login.html";
+}
+</script>
+
+<div class="container">
+<h2>🐾 Gestión de Mascotas</h2>
+
+<!-- FORMULARIO -->
+<input id="nombre" placeholder="Nombre de la mascota">
+<input id="tipo" placeholder="Tipo (Perro / Gato)">
+<input id="raza" placeholder="Raza">
+<input id="edad" type="number" placeholder="Edad">
+<input id="tamano" placeholder="Tamaño">
+<input id="sexo" placeholder="Sexo">
+<input id="url_imagen" placeholder="URL de imagen (opcional)">
+<textarea id="descripcion" placeholder="Descripción"></textarea>
+
+<button class="btn-add" onclick="agregar()">➕ Agregar Mascota</button>
+
+<hr>
+
+<!-- LISTA -->
+<div id="lista"></div>
+
+<button onclick="cerrarSesion()" style="margin-top:20px; background:#555; color:white;">
+Cerrar sesión
+</button>
+</div>
+
+<script>
+let db = JSON.parse(localStorage.getItem("mascotasDB")) || [];
 
 function guardar() {
-  localStorage.setItem("mascotasDB", JSON.stringify(db));
-  render();
+    localStorage.setItem("mascotasDB", JSON.stringify(db));
+    render();
 }
 
 function agregar() {
-  db.push({
-    id: Date.now(),
-    nombre: nombre.value,
-    tipo: tipo.value,
-    raza: raza.value,
-    disponible: true
-  });
-  guardar();
+    if (!nombre.value || !tipo.value) {
+        alert("Completa al menos nombre y tipo");
+        return;
+    }
+
+    db.push({
+        id: Date.now(),
+        nombre: nombre.value,
+        tipo: tipo.value,
+        raza: raza.value,
+        edad: edad.value,
+        tamano: tamano.value,
+        sexo: sexo.value,
+        descripcion: descripcion.value,
+        url_imagen: url_imagen.value,
+        disponible: true
+    });
+
+    limpiar();
+    guardar();
 }
 
 function eliminar(id) {
-  db = db.filter(m => m.id !== id);
-  guardar();
+    if (confirm("¿Eliminar mascota?")) {
+        db = db.filter(m => m.id !== id);
+        guardar();
+    }
+}
+
+function limpiar() {
+    nombre.value = "";
+    tipo.value = "";
+    raza.value = "";
+    edad.value = "";
+    tamano.value = "";
+    sexo.value = "";
+    descripcion.value = "";
+    url_imagen.value = "";
 }
 
 function render() {
-  lista.innerHTML = "";
-  db.forEach(m => {
-    lista.innerHTML += `
-      <li>
-        ${m.nombre} (${m.tipo})
-        <button onclick="eliminar(${m.id})">❌</button>
-      </li>`;
-  });
+    lista.innerHTML = "";
+
+    if (db.length === 0) {
+        lista.innerHTML = "<p>No hay mascotas registradas.</p>";
+        return;
+    }
+
+    db.forEach(m => {
+        lista.innerHTML += `
+        <div class="card">
+            <b>${m.nombre}</b> - ${m.tipo}<br>
+            Raza: ${m.raza || "Mestizo"}<br>
+            Edad: ${m.edad || "-"}<br>
+            <button class="btn-delete" onclick="eliminar(${m.id})">❌ Eliminar</button>
+        </div>
+        `;
+    });
+}
+
+function cerrarSesion() {
+    localStorage.removeItem("adminLogueado");
+    window.location.href = "admin-login.html";
 }
 
 render();
