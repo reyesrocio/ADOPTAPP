@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login - ADOPTAPP</title>
+</head>
+<body>
+
+<h2>🔐 Acceso Administrador</h2>
+
+<input type="text" id="user" placeholder="Usuario">
+<input type="password" id="pass" placeholder="Contraseña">
+<button onclick="login()">Ingresar</button>
+
+<script>
+function login() {
+  const user = document.getElementById("user").value;
+  const pass = document.getElementById("pass").value;
+
+  if (user === "admin" && pass === "1234") {
+    localStorage.setItem("adminLogueado", "true");
+    window.location.href = "admin-panel.html";
+  } else {
+    alert("Credenciales incorrectas");
+  }
+}
+
+function loginAdmin() {
+    const pass = document.getElementById("password").value;
+    if (pass === "admin123") {
+        localStorage.setItem("adminLogueado", "true");
+        window.location.href = "admin-panel.html";
+    } else {
+        alert("Contraseña incorrecta");
+    }
+}
+
+
+</script>
+
+</body>
+</html>
