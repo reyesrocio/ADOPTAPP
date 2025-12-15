@@ -23,66 +23,76 @@
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            max-width: 500px;
+            max-width: 420px;
             width: 100%;
             text-align: center;
         }
 
         h1 {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             background: linear-gradient(45deg, #2196F3, #8a2be2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        p {
-            color: #555;
-            margin-bottom: 30px;
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
         }
 
-        .btn {
-            display: block;
+        button {
             width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 14px;
             border-radius: 30px;
             border: none;
             font-size: 1rem;
             font-weight: 600;
             color: white;
+            background: linear-gradient(90deg, #8a2be2, #4a6fa5);
             cursor: pointer;
-            text-decoration: none;
-            transition: transform 0.3s;
         }
 
-        .btn:hover {
-            transform: translateY(-3px);
+        button:hover {
+            opacity: 0.9;
         }
 
-        .btn-mascotas { background: linear-gradient(90deg, #4CAF50, #69b36d); }
-        .btn-solicitudes { background: linear-gradient(90deg, #FF9800, #f57c00); }
-        .btn-salir { background: linear-gradient(90deg, #f44336, #d32f2f); }
-
+        .error {
+            color: red;
+            font-size: 0.9rem;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <div class="panel">
-        <h1>Panel Administrador</h1>
-        <p>Gestión interna de ADOPTAPP</p>
+<div class="panel">
+    <h1>🔐 Acceso Administrador</h1>
+    <p>Ingrese la contraseña</p>
 
-        <a href="02-mascotas.html" class="btn btn-mascotas">
-            🐶 Gestionar Mascotas
-        </a>
+    <input type="password" id="password" placeholder="Contraseña">
+    <p class="error" id="error">❌ Contraseña incorrecta</p>
 
-        <a href="04-adopciones_exito.html" class="btn btn-solicitudes">
-            📦 Ver Solicitudes
-        </a>
+    <button onclick="login()">Ingresar</button>
+</div>
 
-        <a href="index.html" class="btn btn-salir">
-            🚪 Cerrar sesión
-        </a>
-    </div>
+<script>
+    const PASSWORD_ADMIN = "admin123";
+
+    function login() {
+        const pass = document.getElementById("password").value;
+
+        if (pass === PASSWORD_ADMIN) {
+            localStorage.setItem("adminLogueado", "true");
+            window.location.href = "admin_panel.html";
+        } else {
+            document.getElementById("error").style.display = "block";
+        }
+    }
+</script>
 
 </body>
 </html>
