@@ -108,7 +108,7 @@ let mascota = null;
 
 // 🔹 Cargar mascota seleccionada
 document.addEventListener("DOMContentLoaded", () => {
-    mascota = JSON.parse(localStorage.getItem("mascotaSeleccionadaForm"));
+    mascota = JSON.parse(localStorage.getItem("mascotaSeleccionada"));
 
     if (!mascota) {
         alert("Debes seleccionar una mascota");
@@ -159,3 +159,4 @@ document.getElementById("formAdopcion").addEventListener("submit", e => {
 
 </body>
 </html>
+
