@@ -4,41 +4,13 @@
     <meta charset="UTF-8">
     <title>Gestión de Mascotas | ADOPTAPP</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-        th {
-            background-color: #eee;
-        }
-        button {
-            padding: 5px 10px;
-            margin: 2px;
-            cursor: pointer;
-        }
-        #agregarMascota {
-            margin-top: 20px;
-            padding: 10px 20px;
-        }
-        input[type="text"] {
-            padding: 5px;
-            margin: 5px;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        h1 { text-align: center; color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        th { background-color: #eee; }
+        button { padding: 5px 10px; margin: 2px; cursor: pointer; }
+        input[type="text"] { padding: 5px; margin: 5px; }
     </style>
 </head>
 <body>
@@ -54,9 +26,7 @@
             <th>Acciones</th>
         </tr>
     </thead>
-    <tbody>
-        <!-- Aquí se cargarán las mascotas -->
-    </tbody>
+    <tbody></tbody>
 </table>
 
 <h3>Agregar / Editar Mascota</h3>
@@ -71,9 +41,9 @@
 <button id="logoutBtn">Cerrar sesión</button>
 
 <script>
-    // Redirigir si no está logueado como admin
+    // Verifica si es admin
     if (localStorage.getItem("adminLogueado") !== "true") {
-        window.location.href = "admin.html";
+        window.location.href = "admin.html"; // Página de login de admin
     }
 
     let mascotas = JSON.parse(localStorage.getItem("mascotasDB")) || [];
@@ -127,10 +97,8 @@
         };
         const index = indexInput.value;
         if (index === "") {
-            // Agregar nueva mascota
             mascotas.push(nuevaMascota);
         } else {
-            // Editar mascota existente
             mascotas[index] = nuevaMascota;
         }
         localStorage.setItem("mascotasDB", JSON.stringify(mascotas));
@@ -144,9 +112,7 @@
         window.location.href = "admin.html";
     });
 
-    // Mostrar las mascotas al cargar la página
     mostrarMascotas();
 </script>
-
 </body>
 </html>
