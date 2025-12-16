@@ -95,20 +95,23 @@
             return JSON.parse(localStorage.getItem("mascotasDB")) || [];
         }
 
-        function adoptarMascota(id) {
-            const mascotas = JSON.parse(localStorage.getItem("mascotasDB")) || [];
-            const mascota = mascotas.find(m => m.id === id);
+    <script>
+    function seleccionarMascota(id) {
+        const db = JSON.parse(localStorage.getItem("mascotasDB")) || [];
+        const mascota = db.find(m => m.id === id);
 
-            if (!mascota) return;
-
-            localStorage.setItem(
-                "mascotaSeleccionada",
-                JSON.stringify(mascota)
-            );
-
-        window.location.href = "form-adopcion.html";
+        if (!mascota) {
+            alert("Mascota no encontrada");
+            return;
         }
 
+    // Guardar mascota seleccionada
+    localStorage.setItem("mascotaSeleccionadaForm", JSON.stringify(mascota));
+
+    // Ir al formulario
+    window.location.href = "03-formulario_adopcion.html";
+}
+</script>
 
         function renderMascotas() {
             const mascotas = getMascotasDB();
@@ -138,8 +141,8 @@
                         <span class="badge">${m.edad} años</span>
                         <span class="badge">${m.sexo}</span>
                         <p>${m.descripcion || ''}</p>
-                        <button class="btn-adopcion" onclick="adoptarMascota(${m.id})">
-                            ❤️ Adoptar
+                        <button class="btn-adopcion" onclick="seleccionarMascota(${m.id})">
+                        ❤️ Solicitar adopción
                         </button>
                     </div>
                 `;
@@ -152,4 +155,5 @@
 
 </body>
 </html>
+
 
