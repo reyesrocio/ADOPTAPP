@@ -58,7 +58,7 @@ function login() {
   const password = document.getElementById("pass").value;
   alert("Lo que escribiste es: [" + password + "]");
 
-  if (password === "1234") {
+  if (password.trim() === "1234") {
     localStorage.setItem("adminLogueado", "true");
     window.location.href = "admin-panel.html";
   } else {
