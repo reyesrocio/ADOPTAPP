@@ -168,23 +168,21 @@ function guardar() {
   }
 
   const mascota = {
-    id: editId || Date.now(),  // Genera un ID único
+    id: editId || Date.now(),
     nombre: nombre.value,
     tipo: tipo.value,
     raza: raza.value,
     edad: edad.value,
     sexo: sexo.value,
     descripcion: descripcion.value,
-    imagen: imagen.value || "https://via.placeholder.com/120", // Placeholder si no hay URL
+    imagen: imagen.value || "https://via.placeholder.com/120",
     disponible: true
   };
 
   if(editId) {
-    // Editar mascota existente
     const index = mascotas.findIndex(m => m.id === editId);
     if(index !== -1) mascotas[index] = mascota;
   } else {
-    // Agregar nueva mascota
     mascotas.push(mascota);
   }
 
@@ -192,10 +190,7 @@ function guardar() {
   alert("Mascota guardada ✅");
   limpiar();
   editId = null;
-  render(); // actualizar pantalla
-}
-
-    .catch(err => alert("Error: " + err));
+  render();
 }
 
 function editar(id){
