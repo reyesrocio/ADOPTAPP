@@ -58,7 +58,7 @@
         border-radius: 10px;
     }
     .mascota h3 { margin: 10px 0 5px; font-size: 20px; color: #4a6fa5; }
-    .mascota p { margin: 5px 0; color: #333; }
+    .mascota p { margin: 5px 0; color: #333; font-size: 14px; }
     .mascota button {
         margin-top: 10px;
         padding: 10px;
@@ -82,59 +82,40 @@
     <button id="adminBtn">Admin</button>
 </header>
 
-<div class="mascotas-container" id="lista-mascotas">
-    <!-- Mascotas se cargarán aquí -->
-</div>
+<div class="mascotas-container" id="lista-mascotas"></div>
 
 <script>
-    // Datos de ejemplo
-    const mascotas = JSON.parse(localStorage.getItem("mascotasDB")) || [
-        {
-            id: 1,
-            nombre: "Gato Manul",
-            especie: "Gato",
-            edad: "3 años",
-            foto: "https://cdn0.expertoanimal.com/es/posts/9/8/4/gato_manul_o_gato_de_pallas_caracteristicas_tipos_y_habitat_25489_orig.jpg"
-        },
-        {
-            id: 2,
-            nombre: "Fido",
-            especie: "Perro",
-            edad: "2 años",
-            foto: "https://placedog.net/400/300"
-        }
-    ];
+const mascotas = JSON.parse(localStorage.getItem("mascotasDB")) || [];
 
-    const contenedor = document.getElementById("lista-mascotas");
+const contenedor = document.getElementById("lista-mascotas");
 
-    mascotas.forEach(mascota => {
-        const div = document.createElement("div");
-        div.classList.add("mascota");
-        div.innerHTML = `
-            <img src="${mascota.imagen || 'https://via.placeholder.com/220x180?text=Sin+Imagen'}" alt="${mascota.nombre}">
-            <h3>${mascota.nombre}</h3>
-            <p>Especie: ${mascota.tipo || 'No especificado'}</p>
-            <p>Edad: ${mascota.edad || 'No especificada'}</p>
-            <button onclick="location.href='03-formulario_adopcion.html?id=${mascota.id}'">Adoptar</button>
-        `;
+mascotas.forEach(m => {
+    const div = document.createElement("div");
+    div.classList.add("mascota");
+    div.innerHTML = `
+        <img src="${m.imagen || 'https://via.placeholder.com/220x180?text=Sin+Imagen'}" alt="${m.nombre}">
+        <h3>${m.nombre}</h3>
+        <p>Especie: ${m.tipo || 'No especificado'}</p>
+        <p>Raza: ${m.raza || 'No especificada'}</p>
+        <p>Sexo: ${m.sexo || 'No especificado'}</p>
+        <p>Edad: ${m.edad || 'No especificada'}</p>
+        <p>${m.descripcion || ''}</p>
+        <button onclick="location.href='03-formulario_adopcion.html?id=${m.id}'">Adoptar</button>
+    `;
     contenedor.appendChild(div);
 });
 
-    // Botón admin
-    document.getElementById("adminBtn").addEventListener("click", function() {
-        const pass = prompt("Ingrese contraseña de administrador:");
-        if (pass === "1234") {
-            localStorage.setItem("adminLogueado", "true");
-            window.location.href = "admin-mascotas.html";
-        } else {
-            alert("Contraseña incorrecta");
-        }
-    });
+// Botón admin
+document.getElementById("adminBtn").addEventListener("click", function() {
+    const pass = prompt("Ingrese contraseña de administrador:");
+    if (pass === "1234") {
+        localStorage.setItem("adminLogueado", "true");
+        window.location.href = "admin-mascotas.html";
+    } else {
+        alert("Contraseña incorrecta");
+    }
+});
 </script>
 
 </body>
 </html>
-
-
-
-
