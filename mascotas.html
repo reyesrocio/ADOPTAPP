@@ -2,117 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>ADOPTAPP | Mascotas Disponibles</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <title>Mascotas Disponibles | ADOPTAPP</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f2f2f2;
-        }
-
-        header {
-            background: #ff6b81;
-            color: white;
-            padding: 30px 0;
-            text-align: center;
-            font-family: 'Pacifico', cursive;
-            font-size: 36px;
-            letter-spacing: 2px;
-        }
-
-        h2 {
-            text-align: center;
-            margin-top: 20px;
-            color: #333;
-        }
-
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin: 15px;
-            width: 200px;
-            overflow: hidden;
-            text-align: center;
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: scale(1.05);
-        }
-
-        .card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-        }
-
-        .card h3 {
-            margin: 10px 0 5px 0;
-        }
-
-        .card p {
-            margin: 5px 0;
-            color: #555;
-        }
-
-        .adopt-btn {
-            background: #ff6b81;
-            border: none;
-            color: white;
-            padding: 10px 15px;
-            margin: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-
-        .adopt-btn:hover {
-            background: #ff4757;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .mascota { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+        .mascota img { max-width: 150px; display: block; margin-bottom: 5px; }
+        form { margin-top: 10px; }
+        label { display: block; margin-top: 5px; }
     </style>
 </head>
 <body>
+    <h1>Mascotas Disponibles para Adopción</h1>
+    <div id="lista-mascotas">
+        <!-- Aquí se mostrarán las mascotas -->
+    </div>
 
-<header>ADOPTAPP</header>
-<h2>Mascotas Disponibles para Adopción</h2>
+    <script>
+        // Datos de ejemplo de mascotas (puede cargarse desde localStorage o DB)
+        const mascotas = JSON.parse(localStorage.getItem("mascotasDB")) || [
+            {id: 1, nombre: "Fido", especie: "Perro", edad: "2 años", foto: "fido.jpg"},
+            {id: 2, nombre: "Misu", especie: "Gato", edad: "1 año", foto: "misu.jpg"}
+        ];
 
-<div class="container" id="mascotasContainer">
-    <!-- Aquí se cargarán las tarjetas de mascotas -->
-</div>
+        const contenedor = document.getElementById("lista-mascotas");
 
-<script>
-    const mascotas = JSON.parse(localStorage.getItem("mascotasDB")) || [];
-
-    const container = document.getElementById("mascotasContainer");
-
-    if (mascotas.length === 0) {
-        container.innerHTML = "<p style='text-align:center; width:100%;'>No hay mascotas disponibles por ahora.</p>";
-    } else {
-        mascotas.forEach(m => {
-            const card = document.createElement("div");
-            card.classList.add("card");
-            card.innerHTML = `
-                <img src="${m.imagen || 'https://via.placeholder.com/200x180?text=Mascota'}" alt="${m.nombre}">
-                <h3>${m.nombre}</h3>
-                <p>Tipo: ${m.tipo}</p>
-                <p>Edad: ${m.edad}</p>
-                <button class="adopt-btn">Adoptar</button>
+        mascotas.forEach(mascota => {
+            const div = document.createElement("div");
+            div.classList.add("mascota");
+            div.innerHTML = `
+                <h3>${mascota.nombre} (${mascota.especie})</h3>
+                <p>Edad: ${mascota.edad}</p>
+                <img src="${mascota.foto}" alt="${mascota.nombre}">
+                
+                <h4>Formulario de Solicitud de Adopción</h4>
+                <form onsubmit="enviarSolicitud(event, ${mascota.id})">
+                    <label>Nombre:</label>
+                    <input type="text" name="nombre" required>
+                    
+                    <label>Teléfono:</label>
+                    <input type="tel" name="telefono" required>
+                    
+                    <label>Correo:</label>
+                    <input type="email" name="correo" required>
+                    
+                    <button type="submit">Enviar Solicitud</button>
+                </form>
             `;
-            container.appendChild(card);
+            contenedor.appendChild(div);
         });
-    }
-</script>
 
+        function enviarSolicitud(event, idMascota) {
+            event.preventDefault();
+            const form = event.target;
+            const solicitud = {
+                mascotaId: idMascota,
+                nombre: form.nombre.value,
+                telefono: form.telefono.value,
+                correo: form.correo.value,
+                fecha: new Date().toLocaleDateString()
+            };
+
+            // Guardar solicitud en localStorage
+            const solicitudes = JSON.parse(localStorage.getItem("solicitudesDB")) || [];
+            solicitudes.push(solicitud);
+            localStorage.setItem("solicitudesDB", JSON.stringify(solicitudes));
+
+            alert("¡Solicitud enviada con éxito!");
+            form.reset();
+        }
+    </script>
 </body>
 </html>
