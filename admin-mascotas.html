@@ -161,35 +161,32 @@ function render() {
     });
 }
 
-function guardar(){
-    if(!nombre.value || !tipo.value || !edad.value){
-        alert("Por favor completa los campos Nombre, Tipo y Edad");
-        return;
-    }
+function guardar() {
+  if(!nombre.value || !tipo.value || !edad.value){
+    alert("Completa Nombre, Tipo y Edad");
+    return;
+  }
 
-    const mascota = {
-        id: editId || Date.now(),
-        nombre: nombre.value,
-        tipo: tipo.value,
-        raza: raza.value,
-        edad: edad.value,
-        sexo: sexo.value,
-        descripcion: descripcion.value,
-        imagen: imagen.value,
-        disponible: true
-    };
+  const mascota = {
+    nombre: nombre.value,
+    tipo: tipo.value,
+    raza: raza.value,
+    edad: edad.value,
+    sexo: sexo.value,
+    descripcion: descripcion.value,
+    imagen: imagen.value,
+    disponible: true
+  };
 
-    if(editId){
-        const i = mascotas.findIndex(m => m.id === editId);
-        mascotas[i] = mascota;
-        editId = null;
-    } else {
-        mascotas.push(mascota);
-    }
-
-    localStorage.setItem("mascotasDB", JSON.stringify(mascotas));
-    limpiar();
-    render();
+  const id = editId || Date.now();
+  set(ref(database, 'mascotas/' + id), mascota)
+    .then(() => {
+      alert("Mascota guardada ✅");
+      limpiar();
+      editId = null;
+      render(); // actualizar pantalla
+    })
+    .catch(err => alert("Error: " + err));
 }
 
 function editar(id){
