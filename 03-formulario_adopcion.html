@@ -64,15 +64,26 @@ const form = document.getElementById('formAdopcion');
 form.mascotaId.value = mascotaId;
 
 form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const solicitud = {
-        mascotaId: form.mascotaId.value,
-        nombre: form.nombre.value,
-        dni: form.dni.value,
-        telefono: form.telefono.value,
-        correo: form.correo.value,
-        fecha: new Date().toLocaleDateString()
-    };
+  e.preventDefault();
+
+  const solicitud = {
+    mascotaId: mascotaId,
+    nombre: form.nombre.value,
+    dni: form.dni.value,
+    telefono: form.telefono.value,
+    correo: form.correo.value,
+    fecha: new Date().toLocaleDateString(),
+    estado: "Analizando"
+  };
+
+  push(ref(database, 'solicitudes'), solicitud)
+    .then(() => {
+      alert('¡Solicitud enviada con éxito!');
+      form.reset();
+      window.location.href = 'index.html';
+    })
+    .catch(err => alert("Error: " + err));
+});
 
     const solicitudes = JSON.parse(localStorage.getItem('solicitudesDB')) || [];
     solicitudes.push(solicitud);
@@ -86,3 +97,4 @@ form.addEventListener('submit', function(e) {
 
 </body>
 </html>
+
