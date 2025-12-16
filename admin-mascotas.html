@@ -2,43 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Admin | Mascotas</title>
-
+<title>Admin Mascotas</title>
 <style>
-body{
-    font-family: Poppins, sans-serif;
-    background:#f4f6fb;
-    padding:30px;
-}
-h1{color:#4a6fa5}
-
-.card{
-    background:#fff;
-    padding:20px;
-    border-radius:15px;
-    margin-bottom:20px;
-    box-shadow:0 5px 15px rgba(0,0,0,.1)
-}
-
-input,select{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-    border-radius:8px;
-    border:1px solid #ccc
-}
-
-button{
-    padding:10px 15px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600
-}
-
-.add{background:#4CAF50;color:#fff}
-.edit{background:#2196F3;color:#fff}
-.del{background:#f44336;color:#fff}
+body{font-family:Arial;padding:30px;background:#f2f2f2}
+input,button{padding:8px;margin:5px}
+button{cursor:pointer}
 </style>
 </head>
 
@@ -46,78 +14,71 @@ button{
 
 <script>
 if(localStorage.getItem("adminLogueado")!=="true"){
-    window.location.href="admin.html";
+  window.location.href="admin.html";
 }
 </script>
 
-<h1>🐾 Gestión de Mascotas</h1>
+<h1>🐾 Administrar Mascotas</h1>
 
-<div class="card">
-<h3>➕ Agregar Mascota</h3>
-
+<h3>Agregar mascota</h3>
 <input id="nombre" placeholder="Nombre">
-<input id="tipo" placeholder="Tipo (Perro / Gato)">
-<input id="raza" placeholder="Raza">
-<input id="edad" placeholder="Edad">
-<button class="add" onclick="agregar()">Guardar</button>
-</div>
+<input id="tipo" placeholder="Tipo">
+<button onclick="agregar()">Agregar</button>
 
-<div class="card">
-<h3>📋 Lista de Mascotas</h3>
+<h3>Lista</h3>
 <div id="lista"></div>
-</div>
 
 <script>
 let mascotas = JSON.parse(localStorage.getItem("mascotasDB")) || [];
 
 function guardar(){
-    localStorage.setItem("mascotasDB", JSON.stringify(mascotas));
-    mostrar();
+  localStorage.setItem("mascotasDB", JSON.stringify(mascotas));
+  mostrar();
 }
 
 function agregar(){
-    mascotas.push({
-        id: Date.now(),
-        nombre: nombre.value,
-        tipo: tipo.value,
-        raza: raza.value,
-        edad: edad.value,
-        disponible:true
-    });
-    guardar();
-    nombre.value=tipo.value=raza.value=edad.value="";
+  mascotas.push({
+    id:Date.now(),
+    nombre:nombre.value,
+    tipo:tipo.value,
+    disponible:true
+  });
+  nombre.value="";
+  tipo.value="";
+  guardar();
 }
 
-function borrar(id){
-    mascotas = mascotas.filter(m=>m.id!==id);
-    guardar();
+function eliminar(id){
+  mascotas = mascotas.filter(m=>m.id!==id);
+  guardar();
 }
 
 function editar(id){
-    const m = mascotas.find(x=>x.id===id);
-    const n = prompt("Nuevo nombre", m.nombre);
-    if(n){
-        m.nombre=n;
-        guardar();
-    }
+  let m = mascotas.find(x=>x.id===id);
+  let nuevo = prompt("Nuevo nombre", m.nombre);
+  if(nuevo){
+    m.nombre = nuevo;
+    guardar();
+  }
 }
 
 function mostrar(){
-    lista.innerHTML="";
-    mascotas.forEach(m=>{
-        lista.innerHTML+=`
-        <p>
-        🐶 <b>${m.nombre}</b> (${m.tipo})  
-        <button class="edit" onclick="editar(${m.id})">Editar</button>
-        <button class="del" onclick="borrar(${m.id})">Eliminar</button>
-        </p>`;
-    });
+  lista.innerHTML="";
+  mascotas.forEach(m=>{
+    lista.innerHTML+=`
+      <p>
+      ${m.nombre} (${m.tipo})
+      <button onclick="editar(${m.id})">Editar</button>
+      <button onclick="eliminar(${m.id})">Eliminar</button>
+      </p>
+    `;
+  });
 }
 mostrar();
 </script>
 
 <br>
-<a href="admin-panel.html">⬅ Volver al Panel</a>
+<a href="admin-panel.html">⬅ Volver</a>
 
 </body>
 </html>
