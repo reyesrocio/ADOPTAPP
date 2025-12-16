@@ -2,158 +2,151 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mascotas Disponibles - ADOPTAPP</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
-
+    <title>Gestión de Mascotas | ADOPTAPP</title>
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f0f8ff, #e6e6fa);
-            padding: 20px;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
         }
-        .header-title {
-            font-size: 4rem;
-            background: linear-gradient(45deg, #4682b4, #8a2be2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h1 {
             text-align: center;
+            color: #333;
         }
-        .header-subtitle {
-            text-align: center;
-            color: #4a6fa5;
-            margin-bottom: 30px;
-        }
-        .mascotas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            max-width: 1200px;
-            margin: auto;
-        }
-        .card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
-            text-align: center;
-        }
-        .card img {
+        table {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
-        .card-content {
-            padding: 20px;
-        }
-        .badge {
-            display: inline-block;
-            background: #d1e5f4;
-            color: #1e3a8a;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            margin: 3px;
-        }
-        .btn-adopcion {
-            margin-top: 10px;
-            width: 100%;
+        th, td {
+            border: 1px solid #ccc;
             padding: 10px;
-            border-radius: 20px;
-            border: none;
-            background: linear-gradient(90deg, #4CAF50, #69b36d);
-            color: white;
-            font-weight: bold;
+            text-align: center;
+        }
+        th {
+            background-color: #eee;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 2px;
             cursor: pointer;
         }
-        .no-mascotas {
-            text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            margin-top: 50px;
-            color: #4a6fa5;
+        #agregarMascota {
+            margin-top: 20px;
+            padding: 10px 20px;
+        }
+        input[type="text"] {
+            padding: 5px;
+            margin: 5px;
         }
     </style>
 </head>
 <body>
 
-    <div class="header-title">ADOPTAPP</div>
-    <p class="header-subtitle">Mascotas disponibles para adopción</p>
+<h1>Panel de Gestión de Mascotas</h1>
 
-    <div id="mascotas-grid" class="mascotas-grid"></div>
+<table id="tablaMascotas">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Edad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Aquí se cargarán las mascotas -->
+    </tbody>
+</table>
 
-    <div id="no-mascotas" class="no-mascotas" style="display:none;">
-        <h2>No hay mascotas disponibles 😢</h2>
-        <p>Vuelve pronto, el administrador agregará nuevas.</p>
-    </div>
+<h3>Agregar / Editar Mascota</h3>
+<form id="formMascota">
+    <input type="hidden" id="indexMascota">
+    <input type="text" id="nombreMascota" placeholder="Nombre" required>
+    <input type="text" id="tipoMascota" placeholder="Tipo" required>
+    <input type="text" id="edadMascota" placeholder="Edad" required>
+    <button type="submit">Guardar</button>
+</form>
 
-    <script>
-        // ✅ SOLO LEE LO QUE AGREGA EL ADMIN
-        function getMascotasDB() {
-            return JSON.parse(localStorage.getItem("mascotasDB")) || [];
+<button id="logoutBtn">Cerrar sesión</button>
+
+<script>
+    // Redirigir si no está logueado como admin
+    if (localStorage.getItem("adminLogueado") !== "true") {
+        window.location.href = "admin.html";
+    }
+
+    let mascotas = JSON.parse(localStorage.getItem("mascotasDB")) || [];
+
+    const tablaBody = document.querySelector("#tablaMascotas tbody");
+    const form = document.getElementById("formMascota");
+    const nombreInput = document.getElementById("nombreMascota");
+    const tipoInput = document.getElementById("tipoMascota");
+    const edadInput = document.getElementById("edadMascota");
+    const indexInput = document.getElementById("indexMascota");
+
+    function mostrarMascotas() {
+        tablaBody.innerHTML = "";
+        mascotas.forEach((mascota, index) => {
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td>${mascota.nombre}</td>
+                <td>${mascota.tipo}</td>
+                <td>${mascota.edad}</td>
+                <td>
+                    <button onclick="editarMascota(${index})">Editar</button>
+                    <button onclick="eliminarMascota(${index})">Eliminar</button>
+                </td>
+            `;
+            tablaBody.appendChild(fila);
+        });
+    }
+
+    function editarMascota(index) {
+        const mascota = mascotas[index];
+        nombreInput.value = mascota.nombre;
+        tipoInput.value = mascota.tipo;
+        edadInput.value = mascota.edad;
+        indexInput.value = index;
+    }
+
+    function eliminarMascota(index) {
+        if (confirm("¿Deseas eliminar esta mascota?")) {
+            mascotas.splice(index, 1);
+            localStorage.setItem("mascotasDB", JSON.stringify(mascotas));
+            mostrarMascotas();
         }
+    }
 
-    <script>
-    function seleccionarMascota(id) {
-        const db = JSON.parse(localStorage.getItem("mascotasDB")) || [];
-        const mascota = db.find(m => m.id === id);
-
-        if (!mascota) {
-            alert("Mascota no encontrada");
-            return;
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const nuevaMascota = {
+            nombre: nombreInput.value,
+            tipo: tipoInput.value,
+            edad: edadInput.value
+        };
+        const index = indexInput.value;
+        if (index === "") {
+            // Agregar nueva mascota
+            mascotas.push(nuevaMascota);
+        } else {
+            // Editar mascota existente
+            mascotas[index] = nuevaMascota;
         }
+        localStorage.setItem("mascotasDB", JSON.stringify(mascotas));
+        form.reset();
+        indexInput.value = "";
+        mostrarMascotas();
+    });
 
-    // Guardar mascota seleccionada
-    localStorage.setItem("mascotaSeleccionadaForm", JSON.stringify(mascota));
+    document.getElementById("logoutBtn").addEventListener("click", function() {
+        localStorage.removeItem("adminLogueado");
+        window.location.href = "admin.html";
+    });
 
-    // Ir al formulario
-    window.location.href = "03-formulario_adopcion.html";
-}
+    // Mostrar las mascotas al cargar la página
+    mostrarMascotas();
 </script>
-
-        function renderMascotas() {
-            const mascotas = getMascotasDB();
-            const grid = document.getElementById("mascotas-grid");
-            const noMascotas = document.getElementById("no-mascotas");
-
-            grid.innerHTML = "";
-
-            const disponibles = mascotas.filter(m => m.disponible !== false);
-
-            if (disponibles.length === 0) {
-                noMascotas.style.display = "block";
-                return;
-            }
-
-            noMascotas.style.display = "none";
-
-            disponibles.forEach(m => {
-                const card = document.createElement("div");
-                card.className = "card";
-                card.innerHTML = `
-                    <img src="${m.url_imagen || 'https://via.placeholder.com/300x200?text=ADOPTAPP'}">
-                    <div class="card-content">
-                        <h3>${m.nombre}</h3>
-                        <span class="badge">${m.tipo}</span>
-                        <span class="badge">${m.raza || 'Mestizo'}</span>
-                        <span class="badge">${m.edad} años</span>
-                        <span class="badge">${m.sexo}</span>
-                        <p>${m.descripcion || ''}</p>
-                        <button class="btn-adopcion" onclick="seleccionarMascota(${m.id})">
-                        ❤️ Solicitar adopción
-                        </button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        document.addEventListener("DOMContentLoaded", renderMascotas);
-    </script>
 
 </body>
 </html>
-
-
