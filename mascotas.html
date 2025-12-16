@@ -4,21 +4,25 @@
     <meta charset="UTF-8">
     <title>Mascotas Disponibles | ADOPTAPP</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .mascota { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
-        .mascota img { max-width: 150px; display: block; margin-bottom: 5px; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        h1 { text-align: center; color: #333; }
+        .mascota { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 10px; background-color: #fff; }
+        .mascota img { max-width: 200px; display: block; margin-bottom: 10px; border-radius: 10px; }
         form { margin-top: 10px; }
         label { display: block; margin-top: 5px; }
+        input, button { padding: 8px; margin-top: 5px; width: 100%; border-radius: 5px; border: 1px solid #ccc; }
+        button { background-color: #4a6fa5; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #3b5480; }
     </style>
 </head>
 <body>
     <h1>Mascotas Disponibles para Adopción</h1>
     <div id="lista-mascotas">
-        <!-- Aquí se mostrarán las mascotas -->
+        <!-- Se cargarán las mascotas aquí -->
     </div>
 
     <script>
-        // Datos de ejemplo de mascotas (puede cargarse desde localStorage o DB)
+        // Cargar mascotas desde localStorage (o usar ejemplo si está vacío)
         const mascotas = JSON.parse(localStorage.getItem("mascotasDB")) || [
             {id: 1, nombre: "Fido", especie: "Perro", edad: "2 años", foto: "fido.jpg"},
             {id: 2, nombre: "Misu", especie: "Gato", edad: "1 año", foto: "misu.jpg"}
@@ -30,21 +34,21 @@
             const div = document.createElement("div");
             div.classList.add("mascota");
             div.innerHTML = `
-                <h3>${mascota.nombre} (${mascota.especie})</h3>
+                <h2>${mascota.nombre} (${mascota.especie})</h2>
                 <p>Edad: ${mascota.edad}</p>
                 <img src="${mascota.foto}" alt="${mascota.nombre}">
-                
-                <h4>Formulario de Solicitud de Adopción</h4>
+
+                <h3>Formulario de Solicitud de Adopción</h3>
                 <form onsubmit="enviarSolicitud(event, ${mascota.id})">
                     <label>Nombre:</label>
-                    <input type="text" name="nombre" required>
-                    
+                    <input type="text" name="nombre" placeholder="Tu nombre" required>
+
                     <label>Teléfono:</label>
-                    <input type="tel" name="telefono" required>
-                    
+                    <input type="tel" name="telefono" placeholder="Tu teléfono" required>
+
                     <label>Correo:</label>
-                    <input type="email" name="correo" required>
-                    
+                    <input type="email" name="correo" placeholder="Tu correo" required>
+
                     <button type="submit">Enviar Solicitud</button>
                 </form>
             `;
