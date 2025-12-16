@@ -32,7 +32,6 @@
     </form>
 
     <script>
-        // Obtener ID de mascota desde URL
         const urlParams = new URLSearchParams(window.location.search);
         const idMascota = parseInt(urlParams.get('id'));
 
@@ -55,7 +54,7 @@
 
             alert('¡Solicitud enviada con éxito!');
             form.reset();
-            window.location.href = 'mascotas-usuarios.html'; // Regresa a la lista de mascotas
+            window.location.href = 'mascotas-usuarios.html';
         });
     </script>
 </body>
